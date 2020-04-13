@@ -1,0 +1,12 @@
+body {
+  --color-accent-1: #0d9b8f;
+  --color-accent-2: #cc703a;
+  --color-main-dark: #2d2d2d;
+  --color-main-light: #ccd7da;
+  background-color: var(--color-main-dark);
+  color: var(--color-main-light);
+  text-align: center;
+  font-size: 62.5%;
+}
+
+/*TODO all css*/
