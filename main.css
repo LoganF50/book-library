@@ -76,6 +76,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  min-height: 400px;
 
   background-color: var(--c-main-dark-lighter-1);
   border: 2px solid var(--c-orange);
