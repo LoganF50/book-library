@@ -1,4 +1,4 @@
-let jsLibrary = [];
+let jsLibrary = [new Book('Harry Potter', 'JK Rowling', 265, true), new Book('Harry Potter 2: Chamber of Secrets', 'JK Rowling', 437, false)];
 
 function Book(title, author, numPages, hasRead) {
   this.author = author
@@ -13,6 +13,7 @@ Book.prototype.info = function() {
   return `${this.title} by ${this.author}, ${this.numPages} pages, ` + hasReadStr;
 }
 
+//returns node to add to DOM
 Book.prototype.getDomNode = function(index) {
   let domCard = document.createElement('div');
   let domDelete = document.createElement('i');
@@ -28,6 +29,7 @@ Book.prototype.getDomNode = function(index) {
 
   domDelete.classList.add('material-icons', 'card__btn_delete');
   domDelete.innerText = 'delete';
+  domDelete.addEventListener('click', deleteBook);
   domCard.appendChild(domDelete);
 
   domTitle.classList.add('card__text', 'card__text--emphasized');
@@ -52,6 +54,7 @@ Book.prototype.getDomNode = function(index) {
 
   domBtn.classList.add('btn', 'btn--small');
   domBtn.innerText = 'Change read status';
+  domBtn.addEventListener('click', toggleHasRead);
   domCard.appendChild(domBtn);
 
   return domCard;
@@ -61,12 +64,18 @@ function addBookToLibrary(book) {
   jsLibrary.push(book);
 }
 
-//TODO deletion of books (eventListener, function, etc.)
-//TODO toggling of hasRead (eventListener, function, etc.)
 //TODO different style when read to stand out (green text/checkmark)
 //TODO store data (localStorage vs Firebase)
 
-//TODO connect library to html
+//deletes book from dom and js
+function deleteBook(e) {
+  const card = e.target.parentElement;
+  const index = card.dataset.index;
+  card.remove();
+  jsLibrary.splice(index,1); //remove 1 element from index
+}
+
+//renders js library in dom
 function renderBooks() {
   //remove current books
   while(library.firstChild) {
@@ -76,6 +85,15 @@ function renderBooks() {
   for(let i = 0; i < jsLibrary.length; i++) {
     library.appendChild(jsLibrary[i].getDomNode(i));
   }
+}
+
+//toggles book's hasRead in dom and js
+function toggleHasRead(e) {
+  const card = e.target.parentElement;
+  const index = card.dataset.index;
+  jsLibrary[index].hasRead = !jsLibrary[index].hasRead;
+  //TODO better way to get read status element?
+  card.childNodes[5].innerText = jsLibrary[index].hasRead ? 'read' : 'not read'; //get read status element
 }
 
 //close modal form
@@ -114,13 +132,12 @@ function isValidForm() {
   }
 }
 
-//validate form. if true add book and close form
+//if form is valid then add book and close form
 function handleAddingBook(e) {
   e.preventDefault();
   if(isValidForm()) {
     const newBook = new Book(bookTitle.value, bookAuthor.value, bookNumPages.value, bookHasRead.checked);
     addBookToLibrary(newBook);
-    //TODO render books
     renderBooks();
     closeForm();
   }
@@ -151,6 +168,8 @@ window.onclick = function(e){
     closeForm();
   }
 }
+//render current books when loaded
+window.onload = renderBooks();
 btnOpenForm.addEventListener('click', openForm);
 btnCloseForm.addEventListener('click', closeForm);
 btnAddBook.addEventListener('click', handleAddingBook);
