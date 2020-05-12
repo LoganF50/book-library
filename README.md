@@ -9,4 +9,15 @@ simple "library" to help with object creation. Created with html, css, and js
 - [x] rendered book list
 - [x] removable books
 - [x] displays read status of books
-- [ ] stored books data (localStorage or Firebase)
+- [x] stored books data using localStorage
+- [ ] better modal handling
+    - set focus to first input on open
+    - trap tabbing so it wraps within modal only
+    - allow key press controls {esc}->exit, {enter}->add book
+- [ ] allow editing books
+
+
+## Learning Outcomes
+
+- connect js objects to DOM
+- storing data using localStorage

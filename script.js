@@ -1,4 +1,4 @@
-let jsLibrary = [new Book('Harry Potter', 'JK Rowling', 265, true), new Book('Harry Potter 2: Chamber of Secrets', 'JK Rowling', 437, false)];
+let jsLibrary = [];
 
 function Book(title, author, numPages, hasRead) {
   this.author = author
@@ -62,10 +62,14 @@ Book.prototype.getDomNode = function(index) {
 
 function addBookToLibrary(book) {
   jsLibrary.push(book);
+  updateLocalStorage();
 }
 
-//TODO different style when read to stand out (green text/checkmark)
-//TODO store data (localStorage vs Firebase)
+/*
+TODO different style when read to stand out (green text/checkmark)
+TODO organize code better (refactor if necessary)
+TODO change status button same place in each card (independent of text sizes)
+*/
 
 //deletes book from dom and js
 function deleteBook(e) {
@@ -73,6 +77,7 @@ function deleteBook(e) {
   const index = card.dataset.index;
   card.remove();
   jsLibrary.splice(index,1); //remove 1 element from index
+  updateLocalStorage();
 }
 
 //renders js library in dom
@@ -94,6 +99,7 @@ function toggleHasRead(e) {
   jsLibrary[index].hasRead = !jsLibrary[index].hasRead;
   //TODO better way to get read status element?
   card.childNodes[5].innerText = jsLibrary[index].hasRead ? 'read' : 'not read'; //get read status element
+  updateLocalStorage();
 }
 
 //close modal form
@@ -141,7 +147,26 @@ function handleAddingBook(e) {
     renderBooks();
     closeForm();
   }
-} 
+}
+
+//update localStorage for library
+function updateLocalStorage() {
+  localStorage.setItem('myLibrary', JSON.stringify(jsLibrary));
+}
+
+//get library from localStorage if available else fill with pre-defined books
+function refreshLibrary() {
+  if(localStorage.getItem('myLibrary') === null) {
+    jsLibrary = [new Book('Hunger Games', 'Suzanne Collins', 374, true), new Book('Harry Potter and the Order of the Phoenix', 'J.K. Rowling', 870, false), new Book('To Kill a Mockingbird', 'Harper Lee', 324, true)];
+    updateLocalStorage();
+  } else {
+    let myLibrary = JSON.parse(localStorage.getItem('myLibrary'));
+    jsLibrary = [];
+    myLibrary.forEach(book => {
+      jsLibrary.push(new Book(book.title, book.author, book.numPages, book.hasRead));
+    });
+  }
+}
 
 //DOM Elements
 //buttons
@@ -168,8 +193,11 @@ window.onclick = function(e){
     closeForm();
   }
 }
-//render current books when loaded
-window.onload = renderBooks();
+
 btnOpenForm.addEventListener('click', openForm);
 btnCloseForm.addEventListener('click', closeForm);
 btnAddBook.addEventListener('click', handleAddingBook);
+
+//run on start
+refreshLibrary();
+renderBooks();
