@@ -41,6 +41,7 @@ body {
   background-color: var(--c-main-dark);
   position: relative;
   width: 15rem;
+  box-shadow: 3px 5px 7px 6px var(--c-main-dark);
 }
 
 .card__btn_delete {
